@@ -60,12 +60,6 @@ export default function LoginPage() {
     }
   };
 
-  // Mock login for rapid development until backend is alive
-  const handleMockLogin = () => {
-     // A short term hack giving them immediate access for UI dev
-     router.push("/dashboard");
-  }
-
   if (loading) {
     return (
       <div className="flex bg-blue-50 items-center justify-center min-vh-100 h-screen">
@@ -147,10 +141,6 @@ export default function LoginPage() {
           </div>
         </CardContent>
         <CardFooter className="flex flex-col gap-2">
-          {/* Temporary Mock Login button for testing */}
-          <Button variant="outline" onClick={handleMockLogin} className="w-full text-blue-600 border-blue-200 hover:bg-blue-50">
-             Bypass Login (Dev)
-          </Button>
           <div className="text-center text-xs text-muted-foreground mt-2">
             Need an account? Contact hospital administration.
           </div>

@@ -1,7 +1,7 @@
 "use client";
 
 import { useEffect, useState, useRef, Suspense } from 'react';
-import mqtt from 'mqtt';
+
 import { useRouter, useSearchParams } from 'next/navigation';
 import { db } from '../../lib/firebase';
 import { doc, getDoc } from 'firebase/firestore';
@@ -14,7 +14,6 @@ function CallUI() {
   const searchParams = useSearchParams();
   const bookingId = searchParams.get('booking');
 
-  const [mqttClient, setMqttClient] = useState(null);
   const [connectionStatus, setConnectionStatus] = useState('Ready (Bot Standby)');
   const [micOn, setMicOn] = useState(true);
   const [cameraOn, setCameraOn] = useState(true);
@@ -116,7 +115,6 @@ function CallUI() {
       // We explicitly bypass the dependency array linter here to avoid re-running on tracks change
       cleanup();
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [bookingId]);
 
   // Global cleanup to violently kill camera on unmount/reload
@@ -187,30 +185,8 @@ function CallUI() {
     return () => clearInterval(checkInterval);
   }, [bookingId, router]);
 
-  // MQTT logic bypassed for now as requested
-  // useEffect(() => {
-  //   const MQTT_BROKER_URL = process.env.NEXT_PUBLIC_MQTT_URL || 'wss://broker.hivemq.com:8884/mqtt';
-  //   const client = mqtt.connect(MQTT_BROKER_URL);
-  //   client.on('connect', () => {
-  //     setConnectionStatus('Bot Connected');
-  //     setMqttClient(client);
-  //   });
-  //   client.on('error', (err) => {
-  //     console.error('MQTT Connection error: ', err);
-  //     setConnectionStatus('Bot Connection Failed');
-  //   });
-  //   return () => {
-  //     if (client) {
-  //       client.end();
-  //     }
-  //   };
-  // }, []);
-
   const sendCommand = (x, y) => {
-    // if (mqttClient && mqttClient.connected) {
-    //   const command = { x: x.toFixed(2), y: y.toFixed(2), timestamp: Date.now() };
-    //   mqttClient.publish('navatar/bot/control', JSON.stringify(command));
-    // }
+    // TODO: Implement bot control command dispatch
   };
 
   const handleJoystickMove = (e) => {
@@ -237,7 +213,6 @@ function CallUI() {
   };
 
   const leaveCall = () => {
-    if (mqttClient) mqttClient.end();
     
     // Force aggressive cleanup before navigating
     if (localTracksRef.current?.audio) {
